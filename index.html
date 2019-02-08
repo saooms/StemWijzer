@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>js-proj</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="http://stemwijzer.dvc-icta.nl/data.js"></script>
+</head>
+<body>
+
+    <!-- starting screen -->
+    <section id="start" class="w3-container w3-white w3-display-middle  w3-round-xlarge " style="height: 50%">
+        <header class="w3-container w3-white">
+            <h1>Stemwijzer</h1>
+            <p>Test uw politieke voorkeur aan de hand van 12 stellingen</p>
+            <hr>
+        </header>
+        <div class="w3-container"> 
+
+        <button id="startbtn" class="w3-display-bottommiddle w3-btn w3-round-xlarge w3-jumbo w3-aqua" style="margin: 10px">Start</button>
+    </section>
+
+    <!-- question screen -->
+    <section id="question" class="w3-container w3-white w3-display-middle  w3-round-xlarge w3-margin" style="display: none; height: 60%">
+        <header class="w3-container w3-white">
+            <i class="fa fa-bars fa-2x w3-right w3-hover w3-hover-opacity" style="margin: 30px 10px"> standpunten</i>
+            <h1 id="questiontitle"></h1>
+            <hr>
+        </header>
+        <p id="text" class="w3-margin"></p>
+        
+        <button id="pro" class="btn w3-btn w3-xxlarge w3-round-large w3-grey w3-display-left" style="margin: 10px">eens</button>
+        <button id="ambivalent" class="btn w3-btn w3-xxlarge w3-round-large w3-grey w3-display-middle" style="margin: 10px">geen van beide</button>
+        <button id="contra" class="btn w3-btn w3-xxlarge w3-round-large w3-grey w3-display-right" style="margin: 10px">oneens</button>
+
+        <button id="back" class="back w3-display-bottomleft w3-btn w3-round-large w3-aqua" style="margin: 10px"><-</button>
+        <button id="skip" class="w3-display-bottommiddle w3-btn w3-round-large w3-aqua" style="margin: 10px">overslaan</button>
+    </section>
+
+    <!-- option screen -->
+    <section id="options" class="w3-container w3-white w3-display-middle  w3-round-xlarge w3-margin" style="display: none">
+        <header class="w3-container w3-white">
+            <h1></h1>
+            <p id="optionstext">Zijn er onderwerpen die u extra belangrijk vindt?</p>
+            <hr>
+        </header>
+        <div id="optionslist">
+
+        </div>
+        <hr>
+        <button id="back" class="back w3-display-bottomleft w3-btn w3-round-large w3-aqua" style="margin: 10px"><-</button>
+        <button id="next" class="w3-display-bottomright w3-btn w3-round-large w3-aqua" style="margin: 10px">Volgende -></button>
+    </section>
+    <script src="js/script.js"></script>
+    
+</body>
+</html>
