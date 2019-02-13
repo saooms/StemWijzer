@@ -8,15 +8,15 @@ body, html {
     background-size: 100%;
 }
 
-#question, #options {
+#question, .options {
     min-width: 770px;
 }
 
-#options {
+.options {
     height: 80%;
 }
 
-#optionslist {
+#statementlist, #partylist {
     size: 100%;
     display: grid;
     grid-template-columns: 50% 50%;

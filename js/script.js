@@ -1,31 +1,49 @@
-var index;
-var answerlst = [];
+//#region forms
 var startform = document.getElementById("start");
 var questionform = document.getElementById("question");
-var optionsform = document.getElementById("options");
+var statementsform = document.getElementById("statements");
+var partiesform = document.getElementById("parties");
 var resultform = document.getElementById("result");
+var formarray = [startform, questionform, statementsform, partiesform, resultform];
+//#endregion
+
+//#region btns
 var startbtn = document.getElementById("startbtn");
 var backbtn = document.getElementsByClassName("back");
 var probtn = document.getElementById("pro");
 var ambivalentbtn = document.getElementById("ambivalent");
 var contrabtn = document.getElementById("contra");
 var skipbtn = document.getElementById("skip");
-var nextbtn = document.getElementById("next");
-var checks;
-var currentview;
-var statementlst;
-var partylst;
+var submitstatementsbtn = document.getElementById("submitstatements");
+var submitpartiesbtn = document.getElementById("submitparties");
+//#endregion
 
+//#region miscellaneous
+var questindex;
+var pageindex;
+var currentview;
+var inputs;
+var answerlst = [];
+var selectedStatements = [];
+var selectedParties = [];
+//#endregion
+
+//#region events
 startbtn.onclick = function(){launch()};
 probtn.onclick = function(){nextPage("pro")};
 ambivalentbtn.onclick = function(){nextPage("ambivalent")};
 contrabtn.onclick = function(){nextPage("contra")};
 skipbtn.onclick = function(){nextPage("none")};
-nextbtn.onclick = function(){nextPage()};
+submitstatementsbtn.onclick = function(){submit("statements")};
+submitpartiesbtn.onclick = function(){submit("parties")};
+//#endregion
+
 
 function launch(){
     currentview = startform;
-    index = 0;
+    questindex = 0;
+    pageindex = 1;
+
     for(var i = 0; i < backbtn.length; i++) {
         var btn = backbtn[i];
         btn.onclick = function() {
@@ -44,22 +62,25 @@ function displaySwitch(fol){
 }
 
 function setPage(){
-    console.log(index);
-    if (index < 0) {
-        displaySwitch(startform);
-    }else if (index == subjects.length){
-        setOptions("statements");
-    }else if (index == (subjects.length + 1)){
-        saveOptions();
-        setOptions("parties");
-    }else if(index > (subjects.length + 1)){
-        saveOptions();
-        setResult();
-    } else {
-        setQuestion();
-    }
-    (index >= 0 & typeof(current = answerlst[index]) != 'undefined') ? setColor(current) : resetColor();
+    console.log(formarray[pageindex]);
+    displaySwitch(formarray[pageindex]);
+    switch (currentview) {
+        case questionform:
+            setQuestion();
+            break;
+    
+        case statementsform:
+            setOptions(currentview);
+            break;
 
+        case partiesform:
+            setOptions(currentview);
+            break;
+        
+        case resultform:
+            setResult();
+            break;
+    }
 }
 
 function resetColor(){
@@ -85,7 +106,7 @@ function setColor(current) {
 
 
 function answer(choice){
-    answerlst[index] = (new pick(choice));
+    answerlst[questindex] = (new pick(choice));
 
     function pick(position){
         this.position = position;
@@ -93,69 +114,85 @@ function answer(choice){
 }
 
 function nextPage(choice){
-    if (index < subjects.length) {
-        answer(choice);    
+
+    if (questindex >= (subjects.length - 1)) {
+        pageindex++;
+    } 
+    if (questindex < subjects.length & questindex >= 0){
+        answer(choice);
     }
-    index++;
+    questindex++;
     setPage();
 }
 
 function previousPage(){
-    index--;
+    if (questindex == 0 | questindex >= (subjects.length)) {
+        pageindex--;
+    }
+    questindex--;
     setPage();
 }
 
 function setQuestion(){
-    displaySwitch(questionform);
-    console.log(index);
-    document.getElementById("questiontitle").innerHTML = subjects[index].title;
-    document.getElementById("text").innerHTML = subjects[index].statement;
+    document.getElementById("questiontitle").innerHTML = subjects[questindex].title;
+    document.getElementById("text").innerHTML = subjects[questindex].statement;
+    (questindex >= 0 & typeof(current = answerlst[questindex]) != 'undefined') ? setColor(current) : resetColor();
 }
 
 function setOptions(view){
-    displaySwitch(optionsform);
-    var optionlst = document.getElementById("optionslist");
-    optionlst.innerHTML = "";
-    var text;
-
-    if (view == "statements") {
+    var list;
+    console.log(answerlst);
+    
+    if (view == statementsform) {
+        (list = document.getElementById("statementlist")).innerHTML = ""; 
         subjects.forEach(subject => {
-            optionlst.innerHTML += "<div><input id='" + subject.title + "'class='w3-check' name='statement' type='checkbox'><label> " + subject.title +"</label></div>";
+            console.log(list);
+            list.innerHTML += "<div><input value='" + subject.title + "'class='w3-check' name='statement' type='checkbox'><label> " + subject.title +"</label></div>";
         });
-        text = "Zijn er onderwerpen die u extra belangrijk vindt?";
     }
-    else {
+    else if (view == partiesform){
+        (list = document.getElementById("partylist")).innerHTML = "";   
         parties.forEach(party => {
-            optionlst.innerHTML += "<div><input id='" + party.name + "'class='w3-check' name='party' type='checkbox' checked ='checked'><label> " + party.name +"</label></div>";
+            list.innerHTML += "<div><input value='" + party.name + "'class='w3-check' name='party' type='checkbox'><label> " + party.name +"</label></div>";
         });
-        text = "Welke partijen wilt u meenemen in het resultaat?";
     }
-    var statements = document.getElementsByName('statement');
-    console.log(statements);
-
-    document.getElementById("optionstext").innerHTML = text;
+    setChecked(view);
 }
 
-function saveOptions(){
-    // statementlst = ((stat = document.getElementsByName('statement')) > 0? stat :  );
-    // partylst += ((part = document.getElementsByName('party')) > 0? part : []);
-    // var impsub = [];
-    // var imppar = [];
-    // (statementlst < 0)? save(partylst) : save(statementlst);
+function setChecked(view){
+    inputs = document.getElementsByClassName('w3-check');
 
-    // function save(par) {
-    //     console.log("u did" + par);
-    //     for (let i = 0; i < par.length; i++) {
-    //         if(par[i].checked){
-    //             impsub += par[i].id;
-    //         }
-    //     }
-    // }
+    for (i = 0; i < inputs.length; i++) {
+        for (a = 0; a < ((view == statementsform)? selectedStatements : selectedParties).length; a++) {
+            console.log(inputs[i].value, selectedParties[a], i, a);
+            if(view == statementsform){
+                if (inputs[i].value == selectedStatements[a]) {
+                    inputs[i].checked = true;
+                }
+            } else {
+                if (inputs[i].value == selectedParties[a]) {
+                    inputs[i].checked = true;
+                } 
+            }
+        }
+    }
 
-    ((array == "thing")? arrayname : arrayname2).push(item);
 }
+
+function submit(array){
+    inputs = document.getElementsByClassName('w3-check');
+    (((array == "statements")? selectedStatements : selectedParties).length = 0);
+    for(i = 0; i < inputs.length; i++){
+        if(inputs[i].checked){
+            ((array == "statements")? selectedStatements : selectedParties).push(inputs[i].value);
+        }
+    }
+    console.log(selectedStatements, selectedParties);
+    nextPage();
+}
+
 
 function setResult(){
-    console.log(statementlst, partylst);
-    displaySwitch(resultform);
+    // console.log(statementlst, partylst);
+    // displaySwitch(resultform);
 }
