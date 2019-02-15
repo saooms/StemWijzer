@@ -1,4 +1,4 @@
-body, html {
+body, html {    
     margin: 0%;
     padding: 0%;
     width: 100%;
@@ -6,9 +6,10 @@ body, html {
     background-image: url(../img/back.jpg);
     background-repeat: no-repeat;
     background-size: 100%;
+    background-attachment: fixed;
 }
 
-#question, .options {
+#question, #mainresult, .options {
     min-width: 770px;
 }
 
@@ -20,6 +21,19 @@ body, html {
     size: 100%;
     display: grid;
     grid-template-columns: 50% 50%;
+}
+
+#mainresult {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+}
+
+#resultlist:first-child {
+    background-color: rgb(7, 209, 7);
+}
+
+#resultlist div, #importantlist div {
+    height: 50px;
 }
 
 .btn {

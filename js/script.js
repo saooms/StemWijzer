@@ -16,6 +16,9 @@ var contrabtn = document.getElementById("contra");
 var skipbtn = document.getElementById("skip");
 var submitstatementsbtn = document.getElementById("submitstatements");
 var submitpartiesbtn = document.getElementById("submitparties");
+var secularbtn = document.getElementById("select-secular");
+var allbtn = document.getElementById("select-all");
+var bigbtn = document.getElementById("select-big")
 //#endregion
 
 //#region miscellaneous
@@ -36,6 +39,9 @@ contrabtn.onclick = function(){nextPage("contra")};
 skipbtn.onclick = function(){nextPage("none")};
 submitstatementsbtn.onclick = function(){submit("statements")};
 submitpartiesbtn.onclick = function(){submit("parties")};
+secularbtn.onclick = function(){select("secular")};
+allbtn.onclick = function(){select("all")};
+bigbtn.onclick = function(){select("big")};
 //#endregion
 
 
@@ -147,13 +153,13 @@ function setOptions(view){
         (list = document.getElementById("statementlist")).innerHTML = ""; 
         subjects.forEach(subject => {
             console.log(list);
-            list.innerHTML += "<div><input value='" + subject.title + "'class='w3-check' name='statement' type='checkbox'><label> " + subject.title +"</label></div>";
+            list.innerHTML += "<div><input value='" + subject.title + "' class='statement w3-check' name='statement' type='checkbox'><label> " + subject.title +"</label></div>";
         });
     }
     else if (view == partiesform){
         (list = document.getElementById("partylist")).innerHTML = "";   
         parties.forEach(party => {
-            list.innerHTML += "<div><input value='" + party.name + "'class='w3-check' name='party' type='checkbox'><label> " + party.name +"</label></div>";
+            list.innerHTML += "<div><input value='" + party.name + "' class='party w3-check' name='party' type='checkbox'><label> " + party.name + "[" + party.size +"]</label></div>";
         });
     }
     setChecked(view);
@@ -180,19 +186,93 @@ function setChecked(view){
 }
 
 function submit(array){
-    inputs = document.getElementsByClassName('w3-check');
+    inputs = document.getElementsByClassName((array == "statements")? "statement" : "party");
+    
     (((array == "statements")? selectedStatements : selectedParties).length = 0);
     for(i = 0; i < inputs.length; i++){
         if(inputs[i].checked){
             ((array == "statements")? selectedStatements : selectedParties).push(inputs[i].value);
         }
     }
-    console.log(selectedStatements, selectedParties);
-    nextPage();
+    if(array == 'parties' && selectedParties.length < 3){
+        alert("minimaal 3... bitch");
+    }else{
+        console.log(selectedStatements, selectedParties);
+        nextPage();
+    }
+}
+
+function select(type) {
+    inputs = document.getElementsByClassName("party");
+
+    for (let index = 0; index < parties.length; index++) {
+        if (type == "secular") {
+            if (parties[index].secular == false) {
+                inputs[index].checked = true;
+            }
+        } else if (type == "all") {
+            inputs[index].checked = true;
+        } else if (type == "big") {
+            if (parties[index].size > 5) {
+                inputs[index].checked = true;    
+            }
+        }    
+    }
+    
 }
 
 
 function setResult(){
-    // console.log(statementlst, partylst);
-    // displaySwitch(resultform);
+    console.log(selectedStatements, selectedParties);
+    var comparedparties = getResult();
+
+    console.log(comparedparties, comparedparties[0], comparedparties[0].important, comparedparties[0].name, answerlst, );
+    document.getElementById("resultlist").innerHTML = "";
+    document.getElementById("importantlist").innerHTML = "";
+
+    for (let index = 0; index < comparedparties.length; index++) {
+        document.getElementById("resultlist").innerHTML += "<div><label><big>[" + comparedparties[index].name + "]</big> met een overeenkomst score van: " + comparedparties[index].value + "</label><hr></div>"   
+        document.getElementById("importantlist").innerHTML += "<div><label><big>" + comparedparties[index].important + "</big></label><hr></div>"; 
+    }
+}
+
+function getResult(){
+    result = [];
+
+    for (let index = 0; index < parties.length; index++) {
+        selectedParties.forEach(party => {
+            if (parties[index].name == party) {
+                result.push(new valued(parties[index]));
+            }
+        });
+    }
+
+    function valued(party){
+        this.name = party.name;
+        this.value = compare(party, "all");
+        this.important = compare(party, "important"); 
+    }
+
+    result.sort((a,b) => (a.value > b.value) ? -1 : ((b.value > a.value ? 1 : 0)));
+    result.sort((a,b) => (a.important > b.important) ? -1 : ((b.important > a.important ? 1 : 0))); 
+    return result;
+}
+
+function compare(compparty, type){
+    value = 0;
+    important = 0;
+    for (let index = 0; index < subjects.length; index++) {
+        subjects[index].parties.forEach(party => {
+            if (party.name == compparty.name){
+                if (party.position == answerlst[index].position) {
+                    value++;
+                    if (subjects[index].title == selectedStatements[index]) {
+                        important++;
+                    }
+                }
+            }  
+        }); 
+    }
+
+    return ((type == "all")? value : important);
 }

@@ -63,7 +63,7 @@
         </header>
         <button id="select-secular" class="w3-button w3-green">selecteer zittende partijen</button>
         <button id="select-all" class="w3-button w3-green">selecteer alle partijen</button>
-        <button id="deselect-all"class="w3-button w3-green">deselecteer alles</button>
+        <button id="select-big"class="w3-button w3-green">selecteer grootste partijen</button>
         <hr>
         <div id="partylist">
         
@@ -73,13 +73,25 @@
         <button id="submitparties" class="w3-display-bottomright w3-btn w3-round-large w3-aqua" style="margin: 10px">Volgende -></button>
     </section>
 
-    <section id="result" class="w3-container w3-white w3-display-middle  w3-round-xlarge w3-margin" style="display: none">
+    <section id="result" class="w3-container w3-white w3-display-topmiddle  w3-round-xlarge w3-margin" style="display: none">
         <header class="w3-container w3-white">
             <h1>Resultaat</h1>
             <p>Eind resultaat</p>
             <hr>
         </header>
-
+        <main id="mainresult">
+                <label>best overeenkomende partijen:</label>
+                <label>belangerijke onderwerpen:</label>
+                <hr>
+                <hr>
+            <div id="resultlist">
+                
+            </div>
+            <div id="importantlist">
+                
+            </div>
+            <hr>
+        </main>
         <button id="back" class="back w3-display-bottomleft w3-btn w3-round-large w3-aqua" style="margin: 10px"><-</button>
     </section>
     <script src="js/script.js"></script>
