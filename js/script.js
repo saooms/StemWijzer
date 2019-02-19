@@ -110,7 +110,6 @@ function setColor(current) {
         }
 }
 
-
 function answer(choice){
     answerlst[questindex] = (new pick(choice));
 
@@ -221,7 +220,6 @@ function select(type) {
     
 }
 
-
 function setResult(){
     console.log(selectedStatements, selectedParties);
     var comparedparties = getResult();
@@ -266,8 +264,10 @@ function compare(compparty, type){
             if (party.name == compparty.name){
                 if (party.position == answerlst[index].position) {
                     value++;
-                    if (subjects[index].title == selectedStatements[index]) {
-                        important++;
+                    for (let i = 0; i < selectedStatements.length; i++) {
+                        if (subjects[index].title == selectedStatements[i]) {
+                            important++;
+                        }
                     }
                 }
             }  
